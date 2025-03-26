@@ -1,6 +1,8 @@
 import json
 import os
 
+# -------------------- FUNCIONES PARA MANEJO DE USUARIOS --------------------
+
 def cargar_usuarios():
     if not os.path.exists("usuarios.json"):
         with open("usuarios.json", "w", encoding="utf-8") as file:
@@ -56,23 +58,74 @@ def registrar_usuario():
     guardar_usuarios(usuarios)
     print("Usuario registrado con éxito.")
 
+# -------------------- FUNCIONES PARA MANEJO DE LIBROS --------------------
+
+def cargar_libros():
+    """Carga los libros desde libros.json"""
+    if not os.path.exists("libros.json"):
+        with open("libros.json", "w", encoding="utf-8") as file:
+            json.dump({"libros": []}, file, indent=4)
+        return []
+    
+    with open("libros.json", "r", encoding="utf-8") as file:
+        try:
+            data = json.load(file)
+            return data.get("libros", [])
+        except json.JSONDecodeError:
+            return []
+
+def guardar_libros(libros):
+    """Guarda los libros en libros.json"""
+    with open("libros.json", "w", encoding="utf-8") as file:
+        json.dump({"libros": libros}, file, indent=4, ensure_ascii=False)
+
+def crear_libro(usuario):
+    """Permite a un usuario admin registrar un nuevo libro."""
+    if usuario["rol"] != "admin":
+        print("No tienes permisos para agregar libros.")
+        return
+
+    libros = cargar_libros()
+
+    titulo = input("Ingrese el título del libro: ").strip()
+    autor = input("Ingrese el autor del libro: ").strip()
+    isbn = input("Ingrese el ISBN del libro: ").strip()
+    
+    nuevo_libro = {
+        "titulo": titulo,
+        "autor": autor,
+        "isbn": isbn
+    }
+
+    libros.append(nuevo_libro)
+    guardar_libros(libros)
+    print("Libro agregado con éxito.")
+
+# -------------------- MENÚ PARA USUARIOS --------------------
+
 def menu_usuario(usuario):
     """Menú para usuarios después de iniciar sesión."""
     while True:
         print(f"\nBienvenido, {usuario['nombre']} {usuario['apellido']}!")
         print("1. Ver perfil")
-        print("2. Cerrar sesión")
+        if usuario["rol"] == "admin":
+            print("2. Agregar un libro")
+        print("3. Cerrar sesión")
 
         opcion = input("Seleccione una opción: ").strip()
         if opcion == "1":
             print("\n--- Perfil de Usuario ---")
             for key, value in usuario.items():
                 print(f"{key.capitalize()}: {value}")
-        elif opcion == "2":
+        elif opcion == "2" and usuario["rol"] == "admin":
+            crear_libro(usuario)
+        elif opcion == "3":
             print("Cerrando sesión...\n")
             break
         else:
             print("Opción no válida. Intente de nuevo.")
+
+# -------------------- FUNCIÓN PARA INGRESAR --------------------
 
 def ingresar_usuario():
     usuarios = cargar_usuarios()
@@ -86,6 +139,8 @@ def ingresar_usuario():
             return
     
     print("Email o password incorrectos.")
+
+# -------------------- MENÚ PRINCIPAL --------------------
 
 def mostrar_menu():
     print("\nBienvenido a la Biblioteca")
