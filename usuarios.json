@@ -1,0 +1,31 @@
+{
+    "usuarios": [
+        {
+            "email": "admin@example.com",
+            "password": "admin123",
+            "rol": "admin",
+            "nombre": "Camilo",
+            "apellido": "Perez",
+            "documento": "123456789",
+            "telefono": "3001234567"
+        },
+        {
+            "email": "juan@camilo.com",
+            "password": "123456",
+            "rol": "user",
+            "nombre": "Super",
+            "apellido": "User",
+            "documento": "0123456789",
+            "telefono": "3001234567"
+        },
+        {
+            "email": "correo@imeil.com",
+            "password": "789456",
+            "rol": "user",
+            "nombre": "Admin",
+            "apellido": "Istrador",
+            "documento": "7894561230",
+            "telefono": "3100311312"
+        }
+    ]
+}
