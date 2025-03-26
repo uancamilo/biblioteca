@@ -3,11 +3,11 @@ import os
 
 def cargar_usuarios():
     if not os.path.exists("usuarios.json"):
-        with open("usuarios.json", "w") as file:
-            json.dump({"usuarios": []}, file)  # Estructura vacía inicial
+        with open("usuarios.json", "w", encoding="utf-8") as file:
+            json.dump({"usuarios": []}, file, indent=4)
         return []
 
-    with open("usuarios.json", "r") as file:
+    with open("usuarios.json", "r", encoding="utf-8") as file:
         try:
             data = json.load(file)
             usuarios = data.get("usuarios", [])
@@ -16,22 +16,23 @@ def cargar_usuarios():
             return []
 
 def guardar_usuarios(usuarios):
-    with open("usuarios.json", "w") as file:
+    with open("usuarios.json", "w", encoding="utf-8") as file:
         json.dump({"usuarios": usuarios}, file, indent=4)
 
 def usuario_existe(email, documento, usuarios):
-    return any(isinstance(u, dict) and (u.get("email") == email or u.get("documento") == documento) for u in usuarios)
+    email = email.lower()
+    return any(isinstance(u, dict) and (u.get("email").lower() == email or u.get("documento") == documento) for u in usuarios)
 
 def registrar_usuario():
     usuarios = cargar_usuarios()
 
-    email = input("Ingrese su email: ")
-    password = input("Ingrese su password: ")
-    nombre = input("Ingrese su nombre: ")
-    apellido = input("Ingrese su apellido: ")
-    documento = input("Ingrese su número de documento: ")
-    telefono = input("Ingrese su teléfono: ")
-    rol = input("Ingrese su rol (admin/user): ").lower()
+    email = input("Ingrese su email: ").strip().lower()
+    password = input("Ingrese su password: ").strip()
+    nombre = input("Ingrese su nombre: ").strip()
+    apellido = input("Ingrese su apellido: ").strip()
+    documento = input("Ingrese su número de documento: ").strip()
+    telefono = input("Ingrese su teléfono: ").strip()
+    rol = input("Ingrese su rol (admin/user): ").strip().lower()
 
     if rol not in ["admin", "user"]:
         print("Rol no válido.")
@@ -55,6 +56,37 @@ def registrar_usuario():
     guardar_usuarios(usuarios)
     print("Usuario registrado con éxito.")
 
+def menu_usuario(usuario):
+    """Menú para usuarios después de iniciar sesión."""
+    while True:
+        print(f"\nBienvenido, {usuario['nombre']} {usuario['apellido']}!")
+        print("1. Ver perfil")
+        print("2. Cerrar sesión")
+
+        opcion = input("Seleccione una opción: ").strip()
+        if opcion == "1":
+            print("\n--- Perfil de Usuario ---")
+            for key, value in usuario.items():
+                print(f"{key.capitalize()}: {value}")
+        elif opcion == "2":
+            print("Cerrando sesión...\n")
+            break
+        else:
+            print("Opción no válida. Intente de nuevo.")
+
+def ingresar_usuario():
+    usuarios = cargar_usuarios()
+
+    email = input("Ingrese su email: ").strip().lower()
+    password = input("Ingrese su password: ").strip()
+
+    for usuario in usuarios:
+        if usuario.get("email").lower() == email and usuario.get("password") == password:
+            menu_usuario(usuario)  # Muestra el nuevo menú después del login
+            return
+    
+    print("Email o password incorrectos.")
+
 def mostrar_menu():
     print("\nBienvenido a la Biblioteca")
     print("1. Ingresar")
@@ -64,10 +96,10 @@ def mostrar_menu():
 def main():
     while True:
         mostrar_menu()
-        opcion = input("Seleccione una opción: ")
+        opcion = input("Seleccione una opción: ").strip()
 
         if opcion == "1":
-            print("Función de ingreso aún no implementada.")
+            ingresar_usuario()
         elif opcion == "2":
             registrar_usuario()
         elif opcion == "3":
@@ -76,4 +108,4 @@ def main():
         else:
             print("Opción no válida. Intente de nuevo.")
 
-main() 
+main()
