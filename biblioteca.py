@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime, timedelta
 
 # -------------------- FUNCIONES PARA MANEJO DE USUARIOS --------------------
 
@@ -101,6 +102,89 @@ def crear_libro(usuario):
     guardar_libros(libros)
     print("Libro agregado con éxito.")
 
+# -------------------- FUNCIONES PARA MANEJO DE PRÉSTAMOS --------------------
+
+def cargar_libros():
+    """Carga los libros disponibles desde libros.json"""
+    if not os.path.exists("libros.json"):
+        return []
+    
+    with open("libros.json", "r", encoding="utf-8") as file:
+        try:
+            data = json.load(file)
+            return data.get("libros", [])
+        except json.JSONDecodeError:
+            return []
+
+def guardar_prestamos(prestamos):
+    with open("prestamos.json", "w", encoding="utf-8") as file:
+        json.dump({"prestamos": prestamos}, file, indent=4, ensure_ascii=False)
+
+def cargar_prestamos():
+    if not os.path.exists("prestamos.json"):
+        return []
+    with open("prestamos.json", "r", encoding="utf-8") as file:
+        try:
+            data = json.load(file)
+            return data.get("prestamos", [])
+        except json.JSONDecodeError:
+            return []
+
+def crear_prestamo(usuario):
+    """Permite a un usuario 'user' crear un préstamo con un libro disponible"""
+    if usuario.get("rol") != "user":
+        print("Solo los usuarios con rol 'user' pueden realizar préstamos.")
+        return
+    
+    libros = cargar_libros()
+    if not libros:
+        print("No hay libros disponibles para préstamo.")
+        return
+
+    print("\nLibros disponibles:")
+    for idx, libro in enumerate(libros, start=1):
+        print(f"{idx}. {libro['titulo']} - {libro['autor']}")
+
+    try:
+        opcion = int(input("Seleccione el número del libro que desea prestar: "))
+        if opcion < 1 or opcion > len(libros):
+            print("Opción inválida.")
+            return
+    except ValueError:
+        print("Ingrese un número válido.")
+        return
+
+    libro_seleccionado = libros[opcion - 1]
+
+    fecha_creacion = datetime.today().strftime("%Y-%m-%d")
+    fecha_devolucion = (datetime.today() + timedelta(days=6)).strftime("%Y-%m-%d")
+
+    # Cargar préstamos existentes
+    prestamos = cargar_prestamos()
+    
+    # Obtener el próximo ID
+    nuevo_id = max((p.get("id", 0) for p in prestamos), default=0) + 1
+
+    nuevo_prestamo = {
+        "id": nuevo_id,
+        "usuario": usuario["email"],
+        "nombre": usuario["nombre"],
+        "apellido": usuario["apellido"],
+        "libro": libro_seleccionado["titulo"],
+        "autor": libro_seleccionado["autor"],
+        "fecha_prestamo": fecha_creacion,
+        "fecha_devolucion": fecha_devolucion
+    }
+
+    prestamos.append(nuevo_prestamo)
+    guardar_prestamos(prestamos)
+
+    print(f"\n✅ Préstamo registrado con éxito. ID: {nuevo_id}")
+    print(f"📅 Fecha de préstamo: {fecha_creacion}")
+    print(f"📅 Fecha de devolución: {fecha_devolucion}")
+
+
+
 # -------------------- MENÚ PARA USUARIOS --------------------
 
 def menu_usuario(usuario):
@@ -110,6 +194,8 @@ def menu_usuario(usuario):
         print("1. Ver perfil")
         if usuario["rol"] == "admin":
             print("2. Agregar un libro")
+        elif usuario["rol"] == "user":
+            print("2. Solicitar préstamo")
         print("3. Cerrar sesión")
 
         opcion = input("Seleccione una opción: ").strip()
@@ -119,6 +205,8 @@ def menu_usuario(usuario):
                 print(f"{key.capitalize()}: {value}")
         elif opcion == "2" and usuario["rol"] == "admin":
             crear_libro(usuario)
+        elif opcion == "2" and usuario["rol"] == "user":
+            crear_prestamo(usuario)
         elif opcion == "3":
             print("Cerrando sesión...\n")
             break
