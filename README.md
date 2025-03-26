@@ -15,5 +15,5 @@ Proyecto integrador para hacer un CRUD de biblioteca utilizando Python.
 ## Instalación  
 1. Clona el repositorio:  
    ```sh
-   git clone https://github.com/usuario/biblioteca.git
+   git clone https://github.com/uancamilo/biblioteca.git
    cd biblioteca
