@@ -135,7 +135,7 @@ def ingresar_usuario():
 
     for usuario in usuarios:
         if usuario.get("email").lower() == email and usuario.get("password") == password:
-            menu_usuario(usuario)  # Muestra el nuevo menú después del login
+            menu_usuario(usuario) 
             return
     
     print("Email o password incorrectos.")
