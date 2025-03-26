@@ -1,0 +1,27 @@
+{
+    "libros": [
+        {
+            "id": 1,
+            "titulo": "El señor de los anillos",
+            "autor": "J.R.R. Tolkien",
+            "isbn": "978-84-450-7709-6"
+        },
+        {
+            "id": 2,
+            "titulo": "El código Da Vinci",
+            "autor": "Dan Brown",
+            "isbn": "978-84-9759-654-1"
+        },
+        {
+            "id": 3,
+            "titulo": "El principito",
+            "autor": "Antoine de Saint-Exupéry",
+            "isbn": "978-84-206-8539-1"
+        },
+        {
+            "titulo": "El hobbit FT el señor de los anillos",
+            "autor": "El señor que escribe",
+            "isbn": "987-45-612-3214-0"
+        }
+    ]
+}
