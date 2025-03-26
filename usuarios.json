@@ -1,6 +1,7 @@
 {
     "usuarios": [
         {
+            "id": 1,
             "email": "admin@ejemplo.com",
             "password": "admin123",
             "rol": "admin",
@@ -10,6 +11,7 @@
             "telefono": "3001234567"
         },
         {
+            "id": 2,
             "email": "juan@camilo.com",
             "password": "123456",
             "rol": "user",
@@ -19,6 +21,7 @@
             "telefono": "3001234567"
         },
         {
+            "id": 3,
             "email": "correo@imeil.com",
             "password": "789456",
             "rol": "user",

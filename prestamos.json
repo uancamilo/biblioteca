@@ -1,0 +1,14 @@
+{
+    "prestamos": [
+        {
+            "id": 1,
+            "usuario": "juan@camilo.com",
+            "nombre": "Super",
+            "apellido": "User",
+            "libro": "El código Da Vinci",
+            "autor": "Dan Brown",
+            "fecha_prestamo": "2025-03-25",
+            "fecha_devolucion": "2025-03-31"
+        }
+    ]
+}
